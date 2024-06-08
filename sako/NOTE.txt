@@ -1,0 +1,2 @@
+add vec to makefile
+follow sdl2 book

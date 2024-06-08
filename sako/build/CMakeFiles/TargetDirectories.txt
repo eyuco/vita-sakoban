@@ -1,0 +1,6 @@
+/Users/tylersand/sample/build/CMakeFiles/sample.dir
+/Users/tylersand/sample/build/CMakeFiles/sample-velf.dir
+/Users/tylersand/sample/build/CMakeFiles/sample.self-self.dir
+/Users/tylersand/sample/build/CMakeFiles/sample.vpk-vpk.dir
+/Users/tylersand/sample/build/CMakeFiles/edit_cache.dir
+/Users/tylersand/sample/build/CMakeFiles/rebuild_cache.dir
