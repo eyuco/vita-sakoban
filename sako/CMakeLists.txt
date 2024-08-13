@@ -63,6 +63,7 @@ target_link_libraries(${PROJECT_NAME}
                     # the most common stubs are automatically included.
   SceDisplay_stub   # This used by debugScreenPrintf()
   vita2d
+  python2.7
   png
   png16
   jpeg

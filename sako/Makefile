@@ -1,7 +1,7 @@
 
 TITLE_ID = VITA2DTST
 TARGET   = vita2dsample
-OBJS     = font.o main.o gMenu.o graphics/chars/bodies/base/legs_idle_24x24.o image.o bullet.o zombie.o image1.o image2.o target.o tileset.o bg.o blocks.o cursor.o menuBG.o icon.o levelcursor.o write_read.o util.o gMenu.o vec.o \
+OBJS     = font.o main.o gameObjects.o game.o gMenu.o graphics/chars/bodies/base/legs_idle_24x24.o image.o bullet.o zombie.o image1.o image2.o target.o tileset.o bg.o blocks.o cursor.o menuBG.o icon.o levelcursor.o bottom.o write_read.o util.o gMenu.o vec.o collision.o textureManager.o  \
 		Nogg/src/util/memory.o \
 		Nogg/src/util/float-to-int16.o \
 		Nogg/src/util/decode-frame.o \

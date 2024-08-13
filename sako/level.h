@@ -6,9 +6,13 @@
 
 extern unsigned char _binary_tileset_png_start;
 extern unsigned char _binary_blocks_png_start;
+extern unsigned char _binary_bottom_png_start;
+
 
 vita2d_texture *tileset[27];
-vita2d_texture *blocks[10];
+vita2d_texture *blocks[100];
+vita2d_texture *bottomLayer;
+
 void tileObjs();
 void setTileParam();
 void loadTileBuffers();
@@ -69,6 +73,7 @@ tileset[0] = vita2d_load_PNG_buffer(&_binary_tileset_png_start);
    blocks[4] = vita2d_load_PNG_buffer(&_binary_blocks_png_start);
    blocks[5] = vita2d_load_PNG_buffer(&_binary_blocks_png_start);
    blocks[6] = vita2d_load_PNG_buffer(&_binary_blocks_png_start);
+   bottomLayer = vita2d_load_PNG_buffer(&_binary_bottom_png_start);
 
 }
 void setTileParam()

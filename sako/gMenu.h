@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <vita2d.h>
-
+#include "collision.h"
 /*
 look at 170
 
@@ -15,12 +15,33 @@ extern unsigned char _binary_levelcursor_png_start;
 extern unsigned char _binary_cursor_png_start;
 #define NUM_OPTIONS 3
 #define NUM_LEVELS 3
-#define WALKING_ANIMATION_FRAMES  2
+//#define WALKING_ANIMATION_FRAMES  2
+enum GAME_STATE
+{
+    STATE_MENU,
+    STATE_LEVEL_MENU,
+    STATE_PLAY,
+    STATE_EXIT
+
+};
+enum GAME_STATE currentState;
+
+enum LEVEL_STATE
+{
+    LEVEL_TUT,
+    LEVEL_ONE,
+    LEVEL_TWO
+
+};
+enum LEVEL_STATE currentLevel;
+
+
 int GREEN = 255;
 int BLUE  = 255;
 bool menuState;
 bool levelSelectState;
 int currentIndex = 0;
+int currentSelection = 0;
 vita2d_texture *cursor;
 vita2d_texture *menu_BG;
 vita2d_texture *level_Select;
@@ -28,7 +49,7 @@ vita2d_texture *icon;
 vita2d_texture *level_Cursor;
 vita2d_pgf *pgf;
 vita2d_pgf *level_List;
-
+/*
 struct Entity {
     float x;
     float y;
@@ -40,7 +61,7 @@ struct Entity {
     int reload;
     vita2d_texture *image[WALKING_ANIMATION_FRAMES];
     //Entity *next;
-};
+};*/
 typedef struct
 {
     int x;
@@ -69,13 +90,18 @@ void cursorUp();
 void cursorDown();
 void menuLoop();
 void levelSelectLoop();
+void level2();
+ void level3();
 void Select(int Option);
 void Select_Level(int Level);
 void drawMenu();
+void drawLevelSelect();
 void pickStart();
+void pickExit();
 void pickOptions();
 void pickExit();
 void hideText();
+void showText();
 void selectorMoveRight();
 void selectorMoveLeft();
 void menuLoop()
@@ -99,6 +125,7 @@ for(int i; i < NUM_LEVELS; i++){
 for(i; i < NUM_OPTIONS; i++){
     Option o = options[i];
     //VDP_drawText(o.label,o.x,o.y);             255     255
+
     vita2d_pgf_draw_text(pgf, o.x, o.y, RGBA8(0, GREEN, 0, BLUE), 1.0f, o.label);//700,30
     
     }
@@ -106,7 +133,19 @@ for(i; i < NUM_OPTIONS; i++){
 }
 void levelSelectLoop()
 {
-  
+  currentState = STATE_PLAY;
+  currentLevel = LEVEL_TUT;
+}
+void level2()
+{
+    currentState = STATE_PLAY;
+  currentLevel = LEVEL_ONE;
+}
+void level3()
+{
+currentState = STATE_PLAY;
+  currentLevel = LEVEL_TWO;
+
 }
 void hideText(vita2d_pgf *pgf)
 {
@@ -114,12 +153,23 @@ void hideText(vita2d_pgf *pgf)
     BLUE = 0;
     
 }
+void showText()
+{
+    GREEN = 255;
+    BLUE = 255;
+}
 void pickStart(){
-    vita2d_start_drawing();
-   vita2d_clear_screen();
+   // vita2d_start_drawing();
+  // vita2d_clear_screen();
 //vita2d_draw_texture(level_Select, 100, 0);
 //minimize level select
+currentState = STATE_LEVEL_MENU;
 
+}
+void pickExit()
+{
+    currentState = STATE_EXIT;
+   // break;
 }
 void Select(int Option){
     switch (Option)
@@ -132,10 +182,11 @@ void Select(int Option){
     }
     case 1:{
         //pickOptions();
+        
         break;
     }
     case 2:{
-        //pickExit();
+        pickExit();
         break;
     }
     
@@ -151,14 +202,16 @@ void Select_Level(int Level)
         //start game loop
         //currentState = STATE_PLAY;
         //draw level 1
-
+        levelSelectLoop();
         break;
     }
     case 1:{
         //pickOptions();
+        level2();
         break;
     }
     case 2:{
+        level3();
         //pickExit();
         break;
     }
@@ -168,16 +221,22 @@ void Select_Level(int Level)
     }
 
 }
+void drawLevelSelect()
+{
+vita2d_draw_texture_part(level_Select, 0, 0, 0.0f, 0.0f, level_Bg.w,level_Bg.h);
+   // vita2d_draw_texture(level_Cursor, level_cursor.x, level_cursor.y);
+    vita2d_draw_texture_part(level_Cursor, level_cursor.x, level_cursor.y, 0.0f, 0.0f, level_cursor.w,level_cursor.h);
 
+}
 void drawMenu()
 {   //make this like menu bg
      
     //vita2d_draw_texture(level_Select, 0, 0);
-    vita2d_draw_texture_part(level_Select, 0, 0, 0.0f, 0.0f, level_Bg.w,level_Bg.h);
+   // vita2d_draw_texture_part(level_Select, 0, 0, 0.0f, 0.0f, level_Bg.w,level_Bg.h);
    // vita2d_draw_texture(level_Cursor, level_cursor.x, level_cursor.y);
-    vita2d_draw_texture_part(level_Cursor, level_cursor.x, level_cursor.y, 0.0f, 0.0f, level_cursor.w,level_cursor.h);
+   // vita2d_draw_texture_part(level_Cursor, level_cursor.x, level_cursor.y, 0.0f, 0.0f, level_cursor.w,level_cursor.h);
     //draw each level item and part it
-    vita2d_draw_texture_part(menu_BG, 100, 0, 0.0f, 0.0f, menu_Bg.w,menu_Bg.h);
+    vita2d_draw_texture_part(menu_BG, 0, 0, 0.0f, 0.0f, menu_Bg.w,menu_Bg.h);
       //vita2d_draw_texture(menu_BG,100, 0);
         //vita2d_draw_texture(cursor,gfx_Cursor.x, gfx_Cursor.y);
       vita2d_draw_texture_part(cursor, gfx_Cursor.x, gfx_Cursor.y, 0.0f, 0.0f, gfx_Cursor.w,gfx_Cursor.h);
@@ -187,18 +246,18 @@ void drawMenu()
 
 void selectorMoveRight()
 {
-  if(currentIndex < NUM_LEVELS-1){
-        currentIndex++;
-        level_cursor.x = levelList[currentIndex].x;
+  if(currentSelection < NUM_LEVELS-1){
+        currentSelection++;
+        level_cursor.x = levelList[currentSelection].x;
         //updateCursorPosition();
     }
 
 }
 void selectorMoveLeft()
 {
-  if(currentIndex < NUM_LEVELS+1){
-        currentIndex--;
-        level_cursor.x = levelList[currentIndex].x;
+  if(currentSelection < NUM_LEVELS+1){
+        currentSelection--;
+        level_cursor.x = levelList[currentSelection].x;
         //updateCursorPosition();
     }
 
