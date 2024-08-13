@@ -15,7 +15,7 @@
 #include <vorbis/codec.h>
 #include <vorbis/vorbisenc.h>
 #include "gMenu.h"
-#include "grid.h"
+#include "inputHandler.h"
 #include "level.h"
 #include "util.h"
 #include "collision.h"
@@ -26,7 +26,7 @@
 #include <psp2/audiodec.h> 
 #include <mad.h>
 #include "Audio.h"
-
+#include "textureManager.h"
 #define PLAYER_SPEED          4
 
 #define DATA_LEN        2048
@@ -63,22 +63,12 @@
  *draw level in tiled and just set collision
  * box collisions 1/5
  */
-extern unsigned char _binary_image_png_start;
-extern unsigned char _binary_player1_png_start;
-
-extern unsigned char _binary_zombie_png_start;
-extern unsigned char _binary_image1_png_start;
-extern unsigned char _binary_image2_png_start;
-extern unsigned char _binary_target_png_start;
-//extern unsigned char _binary_tileset_png_start;
-extern unsigned char _binary_bg_png_start;
-//extern unsigned char _binary_blocks_png_start;
 
 AudioHandler _audio;
-bool isFacingUp = false;
+/*bool isFacingUp = false;
 bool isFacingRight = false;
 bool isFacingLeft = false;
-bool isFacingDown = false;
+bool isFacingDown = false;*/
 bool state_Menu = false;
 bool state_Game = false;
 
@@ -92,24 +82,6 @@ void updateTexture();
 int port,i;
 void checkTouch(SceTouchData touch);
 //bool check_collision( struct Entity A, struct Entity B );
-struct Entity player;
-struct Entity box;
-struct Entity box2;
-//put the targets in array
-struct Entity targe;
-struct Entity target2;
-struct Entity lvl3target3;
-struct Entity collider;
-struct Entity goal;
-struct Entity gSpriteClips[WALKING_ANIMATION_FRAMES];
-struct Entity tile;
-struct Entity columns;
-struct Entity lvl3Columns[100];
-struct Entity lvl3Boxes[15];
-struct Entity touchCollider;
-struct Entity playerCollider;
-struct Entity lvl3BoxCollider;
-struct Entity lvl3TargetCollider[6];
 
 vita2d_texture *sprite;
 
@@ -121,7 +93,7 @@ float bulPosX;
 	char pcmout[4096];
 int main(int argc, char** argv)
 {
-	SceCtrlData pad;
+	
 	//vita2d_pgf *pgf;
 	vita2d_pvf *pvf;
 	vita2d_texture *image;
@@ -130,9 +102,7 @@ int main(int argc, char** argv)
 	vita2d_texture *target[10];
    // vita2d_texture *tileset[27];
 	vita2d_texture *bg;
-	//vita2d_texture *blocks[10];
-	//vita2d_texture *cursor;
-  //test
+	
 #define OGG_IMPL
 #define VORBIS_IMPL
 
@@ -485,7 +455,7 @@ float enemyPosY = 544/2;
 	zombie[4] = vita2d_load_PNG_buffer(&_binary_zombie_png_start);
 	zombie[5] = vita2d_load_PNG_buffer(&_binary_zombie_png_start);
 
-
+   
 
 	
    sprite = vita2d_load_PNG_buffer(&_binary_image_png_start);
@@ -626,7 +596,7 @@ unsigned char buf[4096];
        {
           break;
         }
-
+        handleInput();
 		if (pad.buttons & SCE_CTRL_RIGHT)
 		{
             isFacingRight = true;
@@ -634,7 +604,7 @@ unsigned char buf[4096];
 			isFacingLeft = false;
 			isFacingDown = false;
 
-			player.x += grid_cell_size;
+			//player.x += grid_cell_size;
 			playerCollider.x += grid_cell_size;
 			
 			bulPosX += 5;
@@ -1627,13 +1597,13 @@ unsigned char buf[4096];
 			isFacingRight = false;
 			isFacingUp = false;
 
-			player.x -= grid_cell_size;//-=
+			//player.x -= grid_cell_size;//-=
 			playerCollider.x -= grid_cell_size;
 			bulPosX -= 5;
 			columns.x = column[7];
 			//run moving sprite
 			//selectorMoveLeft();
-
+         /*
            if(check_collision(player,lvl3Columns[26]))
 			 	{
 			 		player.x += grid_cell_size;
@@ -1700,7 +1670,7 @@ unsigned char buf[4096];
 			 	{
 			 		player.x += grid_cell_size;
                     //player.x -= lvl3Columns[13].x;
-			 	}
+			 	}*/
 
            //box collision
                if(check_collision(lvl3Boxes[0], player))
@@ -2116,7 +2086,7 @@ unsigned char buf[4096];
 			isFacingRight = false;
 			isFacingLeft = false;
 			isFacingDown = false;
-            player.y -= grid_cell_size;//5;
+            //player.y -= grid_cell_size;//5;
 			playerCollider.y -= grid_cell_size;
 			columns.y = column[3];
             cursorUp();
@@ -2166,7 +2136,7 @@ unsigned char buf[4096];
 			isFacingUp = false;
 
 
-			player.y += grid_cell_size;
+			//player.y += grid_cell_size;
 			playerCollider.x += grid_cell_size;
 			columns.y = column[10];
 			//bulPosY += 10;
@@ -2324,7 +2294,7 @@ unsigned char buf[4096];
 
 		}
         build_Grid();
-
+         
 
          for (int x = 0; x < 1 + grid_width * grid_cell_size;
              x += grid_cell_size) {
@@ -2982,7 +2952,7 @@ unsigned char buf[4096];
 			vita2d_draw_texture(zombie[4], lvl3Boxes[4].x, lvl3Boxes[4].y);
 			vita2d_draw_texture(zombie[5], lvl3Boxes[5].x, lvl3Boxes[5].y);
         //vita2d_draw_texture(zombie[1], box2.x, box2.y);
-
+             
 			     vita2d_draw_texture(target[0], lvl3TargetCollider[0].x,lvl3TargetCollider[0].y);//box.x, box.y
         vita2d_draw_texture(target[1], lvl3TargetCollider[1].x, lvl3TargetCollider[1].y);
 		 vita2d_draw_texture(target[2], lvl3TargetCollider[2].x, lvl3TargetCollider[2].y);
